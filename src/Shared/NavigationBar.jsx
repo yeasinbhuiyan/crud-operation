@@ -45,7 +45,7 @@ const NavigationBar = () => {
                         {navigationLink}
                     </ul>
                 </div>
-                <a className="btn btn-ghost normal-case text-xl">Crud Oparetion</a>
+                <a className="btn btn-ghost normal-case text-xl">Crud Operation</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
@@ -54,7 +54,7 @@ const NavigationBar = () => {
                 </ul>
             </div>
             <div className="navbar-end gap-3">
-                {user ? <button className="btn-success  btn px-1" onClick={handleLogOut}>Logout</button> :
+                {user ? <button className="btn btn-warning   px-1" onClick={handleLogOut}>Logout</button> :
                     <Link to='/login' className="btn btn-warning px-1"> Login </Link>
                 }
 

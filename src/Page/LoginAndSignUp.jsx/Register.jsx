@@ -37,10 +37,7 @@ const Register = () => {
 
         event.preventDefault()
         const eventTarget = event.target
-        // const email = eventTarget.email.value
-        // const password = eventTarget.password.value
-        // const name = eventTarget.name.value
-        // const img = eventTarget.photo.value
+       
 
         console.log(location)
 
@@ -113,12 +110,7 @@ const Register = () => {
 
         }
 
-        // if (!/(?=.*[A-Z])(?=.*?[0-9]).{6}/.test(password)) {
-        //     setPasswordError(`Minimum Six characters, 
-        //     at least Capital 
-        //     letter and one number`)
-        // }
-
+    
         else {
             setPasswordError('')
 
@@ -133,8 +125,6 @@ const Register = () => {
     }
 
 
-
-    useTitle('Register')
 
     return (
         <form onSubmit={handleRegister} className="hero py-24 banner-register min-h-screen -z-0 bg-base-200">
@@ -184,20 +174,12 @@ const Register = () => {
                         }
 
 
-                        {/* 
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Password</span>
-                            </label>
-                            <input name='confirmPass' type="password" placeholder="Confirm Password" className="input input-bordered" required />
-
-                        </div> */}
-
+                    
 
 
 
                         <div className="form-control mt-6">
-                            <button disabled={!email || !password || !img || !name || passwordError || emailError} className="btn btn-success">Register</button>
+                            <button disabled={!email || !password || !img || !name || passwordError || emailError} className="btn btn-warning">Register</button>
                         </div>
                         <p><small>Already have an account? <Link className='font-semibold' to='/login'>Login</Link></small></p>
                         <p className='text-red-400 text-sm'>{error}</p>

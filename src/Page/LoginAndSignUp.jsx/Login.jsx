@@ -141,7 +141,7 @@ const Login = () => {
 
 
                         <div className="form-control mt-6">
-                            <button className="btn btn-success  text-white">Login</button>
+                            <button className="btn btn-warning  text-white">Login</button>
                         </div>
 
 
