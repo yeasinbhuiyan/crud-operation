@@ -23,7 +23,7 @@ const NavigationBar = () => {
 
 
         {
-            user && <li><Link to='/dashboard/adminhome'>Dashboard</Link></li>
+            user && <li><Link to='/dashboard/add-products'>Dashboard</Link></li>
         }
 
 
