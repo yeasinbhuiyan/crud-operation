@@ -20,6 +20,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import UpdateProduct from './Page/Dashboard/UpdateProduct';
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
@@ -53,6 +54,11 @@ const router = createBrowserRouter([
       {
         path: 'product-list',
         element: <GetProducts></GetProducts>
+      },{
+        path: 'update-product/:id',
+        element: <UpdateProduct></UpdateProduct>,
+        loader : ({params})=> fetch(`http://localhost:5000/product/${params.id}`)
+
       }
     ]
   }

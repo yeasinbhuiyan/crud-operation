@@ -1,9 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { FaPenAlt, FaTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 
 const GetProducts = () => {
+    const [selectedProducts, setSelectedProducts] = useState([]);
+
+
+
+
 
     const { data: products = [], refetch } = useQuery({
         queryKey: ['all-products'],
@@ -21,26 +28,69 @@ const GetProducts = () => {
 
 
     const handleDelete = (id) => {
-        fetch(`http://localhost:5000/product/delete/${id}`, {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do You Delete This Product",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:5000/product/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+
+
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.deletedCount > 0) {
+                            refetch()
+                            Swal.fire(
+                                'Good job!',
+                                'Successfully deleted your product',
+                                'success'
+                            )
+                        }
+                        // console.log(data)
+                    })
+            }
+        })
+
+    }
+
+
+    const handleCheckboxChange = (productId) => {
+        if (selectedProducts.includes(productId)) {
+            setSelectedProducts(selectedProducts.filter((id) => id !== productId));
+        } else {
+            setSelectedProducts([...selectedProducts, productId]);
+        }
+    };
+
+
+
+
+    const handleAllDelete = () => {
+        fetch('http://localhost:5000/select-product/delete', {
             method: 'DELETE',
             headers: {
                 'content-type': 'application/json'
             },
-
-
+            body: JSON.stringify(selectedProducts)
         })
-            .then(res => res.json())
-            .then(data => {
-                if (data.deletedCount > 0) {
-                    Swal.fire(
-                        'Good job!',
-                        'Successfully deleted your product',
-                        'success'
-                    )
-                }
-                console.log(data)
-            })
+        .then(res => res.json())
+        .then(data =>{
+            console.log(data)
+        })
+
     }
+
+
     return (
         <>
             <div className="overflow-x-auto">
@@ -49,9 +99,7 @@ const GetProducts = () => {
                     <thead>
                         <tr>
                             <th>
-                                <label>
-                                    <input type="checkbox" className="checkbox" />
-                                </label>
+                                <button onClick={() => handleAllDelete()} className="btn whitespace-no-wrap bg-opacity-50 btn-ghost btn-xs  hover:text-black bg-red-600"><FaTrashAlt></FaTrashAlt></button>
                             </th>
                             <th>#</th>
                             <th>Product Name</th>
@@ -72,7 +120,10 @@ const GetProducts = () => {
                                 <tr key={product._id}>
                                     <th>
                                         <label>
-                                            <input type="checkbox" className="checkbox" />
+                                            <input
+                                                checked={selectedProducts.includes(product._id)}
+                                                onChange={() => handleCheckboxChange(product._id)}
+                                                type="checkbox" className="checkbox" />
                                         </label>
                                     </th>
                                     <td>
@@ -101,11 +152,14 @@ const GetProducts = () => {
                                         }
                                     </td>
                                     <td>
-                                        <button className="btn whitespace-no-wrap bg-opacity-50 btn-ghost btn-xs  hover:text-black bg-yellow-600"><FaPenAlt ></FaPenAlt></button>
+                                        <Link to={`/dashboard/update-product/${product._id}`}><button className="btn whitespace-no-wrap bg-opacity-50 btn-ghost btn-xs  hover:text-black bg-yellow-600"><FaPenAlt ></FaPenAlt></button>
+                                        </Link>
+
                                     </td>
                                     <td>
                                         <button onClick={() => handleDelete(product._id)} className="btn whitespace-no-wrap bg-opacity-50 btn-ghost btn-xs  hover:text-black bg-red-600"><FaTrashAlt></FaTrashAlt></button>
                                     </td>
+
                                 </tr>
 
                             </>)
