@@ -2,12 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { FaPenAlt, FaTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import useAxiosSecure from "../../Hook/useAxiosSecure";
+import { AuthContext } from "../../AuthProvider/AuthProviders";
 
 
 const GetProducts = () => {
     const [selectedProducts, setSelectedProducts] = useState([]);
+    const {user} = useContext(AuthContext)
+    const [active, setActive] = useState(true)
 
+    const [axiosSecure] = useAxiosSecure()
 
 
 
@@ -15,9 +20,9 @@ const GetProducts = () => {
     const { data: products = [], refetch } = useQuery({
         queryKey: ['all-products'],
         queryFn: async () => {
-            const res = await fetch('http://localhost:5000/all-products')
-            const data = res.json()
-            return data
+            const res = await axiosSecure(`/all-products/${user?.email}`)
+
+            return res.data
 
 
         }
@@ -38,17 +43,10 @@ const GetProducts = () => {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`http://localhost:5000/product/delete/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
+                axiosSecure.delete(`/product/delete/${id}`)
 
-
-                })
-                    .then(res => res.json())
                     .then(data => {
-                        if (data.deletedCount > 0) {
+                        if (data.data.deletedCount > 0) {
                             refetch()
                             Swal.fire(
                                 'Good job!',
@@ -65,6 +63,7 @@ const GetProducts = () => {
 
 
     const handleCheckboxChange = (productId) => {
+        setActive(false)
         if (selectedProducts.includes(productId)) {
             setSelectedProducts(selectedProducts.filter((id) => id !== productId));
         } else {
@@ -76,17 +75,40 @@ const GetProducts = () => {
 
 
     const handleAllDelete = () => {
-        fetch('http://localhost:5000/select-product/delete', {
-            method: 'DELETE',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(selectedProducts)
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('http://localhost:5000/select-product/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                  
+                    body: JSON.stringify(selectedProducts)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.deletedCount > 0) {
+                            refetch()
+                            Swal.fire(
+                                'Good job!',
+                                'Successfully deleted your product',
+                                'success'
+                            )
+                        }
+                        console.log(data)
+                    })
+
+            }
         })
-        .then(res => res.json())
-        .then(data =>{
-            console.log(data)
-        })
+
 
     }
 
@@ -99,7 +121,7 @@ const GetProducts = () => {
                     <thead>
                         <tr>
                             <th>
-                                <button onClick={() => handleAllDelete()} className="btn whitespace-no-wrap bg-opacity-50 btn-ghost btn-xs  hover:text-black bg-red-600"><FaTrashAlt></FaTrashAlt></button>
+                                <button disabled={active} onClick={() => handleAllDelete()} className="btn whitespace-no-wrap bg-opacity-50 btn-ghost btn-xs  hover:text-black bg-red-600"><FaTrashAlt></FaTrashAlt></button>
                             </th>
                             <th>#</th>
                             <th>Product Name</th>

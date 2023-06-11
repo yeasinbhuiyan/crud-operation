@@ -1,33 +1,32 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hook/useAxiosSecure";
+import { AuthContext } from "../../AuthProvider/AuthProviders";
 
 
 
 const AddProducts = () => {
     // const { user } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const [category, setCategory] = useState('Kitchen')
+    const [axiosSecure] = useAxiosSecure()
 
     const handleSubmit = (event) => {
         event.preventDefault()
         const form = event.target
-
+        const email = user?.email
         const product_name = form.product_name.value
         const price = parseFloat(form.price.value)
         const available_since = form.date.value
         const date = new Date()
         const status = form.status.value
-        const productsDetails = { product_name, category, price, available_since, status, date }
-        fetch('http://localhost:5000/add-product', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(productsDetails)
-        })
-            .then(res => res.json())
+        const productsDetails = { product_name, category, email, price, available_since, status, date }
+        axiosSecure.post('/add-product', productsDetails)
+
             .then(data => {
-                if (data.insertedId) {
+                if (data.data.insertedId) {
                     console.log(data)
+                    event.target.reset()
                     Swal.fire(
                         'Good job!',
                         'Successfully Added your product',

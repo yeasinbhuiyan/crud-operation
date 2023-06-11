@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hook/useAxiosSecure";
 
 
 const UpdateProduct = () => {
@@ -9,6 +10,7 @@ const UpdateProduct = () => {
     const product = useLoaderData()
     const navigate = useNavigate()
     console.log(product)
+    const [axiosSecure] = useAxiosSecure()
     const [category, setCategory] = useState(product.category)
 
 
@@ -23,16 +25,10 @@ const UpdateProduct = () => {
         const status = form.status.value
         const productsDetails = { product_name, category, price, available_since, status, date }
         // console.log(productsDetails)
-        fetch(`http://localhost:5000/update/${product._id}`, {
-            method: 'PATCH',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(productsDetails)
-        })
-            .then(res => res.json())
+        axiosSecure.patch(`/update/${product._id}`,productsDetails)
+          
             .then(data => {
-                if (data.modifiedCount > 0) {
+                if (data.data.modifiedCount > 0) {
                     console.log(data)
                     Swal.fire(
                         'Good job!',
