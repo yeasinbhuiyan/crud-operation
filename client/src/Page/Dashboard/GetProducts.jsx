@@ -9,7 +9,8 @@ import { AuthContext } from "../../AuthProvider/AuthProviders";
 
 const GetProducts = () => {
     const [selectedProducts, setSelectedProducts] = useState([]);
-    const {user} = useContext(AuthContext)
+    // const [selectAll, setSelectAll] = useState(false);
+    const { user } = useContext(AuthContext)
     const [active, setActive] = useState(true)
 
     const [axiosSecure] = useAxiosSecure()
@@ -74,6 +75,23 @@ const GetProducts = () => {
 
 
 
+    // const handleSelectAll = () => {
+    //     const newSelectAll = !selectAll;
+    //     setSelectAll(newSelectAll);
+
+    //     if (newSelectAll) {
+    //         setSelectedProducts(products.map(product => product.id));
+    //     } else {
+    //         setSelectedProducts([]);
+    //     }
+    // };
+
+
+
+
+
+
+
     const handleAllDelete = () => {
         Swal.fire({
             title: 'Are you sure?',
@@ -85,12 +103,12 @@ const GetProducts = () => {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('http://localhost:5000/select-product/delete', {
+                fetch('https://crud-operation-server-pied.vercel.app/select-product/delete', {
                     method: 'DELETE',
                     headers: {
                         'content-type': 'application/json'
                     },
-                  
+
                     body: JSON.stringify(selectedProducts)
                 })
                     .then(res => res.json())
@@ -120,9 +138,18 @@ const GetProducts = () => {
                     {/* head */}
                     <thead>
                         <tr>
-                            <th>
+                            <th className="">
                                 <button disabled={active} onClick={() => handleAllDelete()} className="btn whitespace-no-wrap bg-opacity-50 btn-ghost btn-xs  hover:text-black bg-red-600"><FaTrashAlt></FaTrashAlt></button>
                             </th>
+                            {/* <th>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectAll}
+                                        onChange={handleSelectAll} />
+
+                                </label>
+                            </th> */}
                             <th>#</th>
                             <th>Product Name</th>
                             <th>Category</th>
@@ -191,6 +218,7 @@ const GetProducts = () => {
 
 
                 </table>
+                <Link to="/dashboard/add-products"> <button className="btn btn-warning mt-16">Add Products</button></Link>
             </div>
 
         </>

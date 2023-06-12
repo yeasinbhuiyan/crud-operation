@@ -10,7 +10,7 @@ const DashboardLink = () => {
 
     return (
         <>
-
+{/* 
             <NavLink
                 to='add-products'
                 className={({ isActive }) =>
@@ -22,7 +22,7 @@ const DashboardLink = () => {
 
                 <span className='mx-4 font-medium'>Add products</span>
             </NavLink>
-
+ */}
 
 
 

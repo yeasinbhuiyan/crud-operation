@@ -70,7 +70,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         const database = client.db("crudDB");
         const productsCollection = database.collection("products");
 
@@ -95,6 +95,7 @@ async function run() {
 
         })
 
+        
         app.get('/all-products/:email', verifyJWT, async (req, res) => {
             const decodedEmail = req.decoded.email 
             const email = req.params.email

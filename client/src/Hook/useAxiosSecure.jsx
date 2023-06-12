@@ -6,7 +6,7 @@ import { AuthContext } from "../AuthProvider/AuthProviders"
 
 
 const axiosSecure = axios.create({
-    baseURL: 'http://localhost:5000'
+    baseURL: 'https://crud-operation-server-pied.vercel.app'
 })
 
 const useAxiosSecure = () => {
