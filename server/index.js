@@ -73,6 +73,9 @@ async function run() {
         // await client.connect();
         const database = client.db("crudDB");
         const productsCollection = database.collection("products");
+        const usersCollection = database.collection("users");
+
+
 
 
         // jwt 
@@ -87,6 +90,34 @@ async function run() {
         })
 
 
+        // user details create 
+
+        app.put('/users', async (req, res) => {
+            const user = req.body
+            // console.log(user)
+            const query = { email: user.email }
+
+            const checkUser = await usersCollection.findOne(query)
+            if (checkUser) {
+                return res.send({ message: 'user already exists' })
+            }
+
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: user,
+            }
+            const result = await usersCollection.updateOne(query, updateDoc, options)
+            res.send(result)
+        })
+
+
+
+
+
+
+
+
+
         app.post('/add-product', verifyJWT, async (req, res) => {
             const product = req.body
             console.log(product)
@@ -95,14 +126,14 @@ async function run() {
 
         })
 
-        
+
         app.get('/all-products/:email', verifyJWT, async (req, res) => {
-            const decodedEmail = req.decoded.email 
+            const decodedEmail = req.decoded.email
             const email = req.params.email
             if (email !== decodedEmail) {
                 return res.status(401).send({ error: true, message: 'unauthorization email' })
 
-              }
+            }
             const query = { email: email }
             const result = await productsCollection.find(query).sort({ date: -1 }).toArray()
             res.send(result)
@@ -116,7 +147,7 @@ async function run() {
 
         })
 
-        app.patch('/update/:id',verifyJWT , async (req, res) => {
+        app.patch('/update/:id', verifyJWT, async (req, res) => {
             const id = req.params.id
             const updatedProduct = req.body
             const filter = { _id: new ObjectId(id) }

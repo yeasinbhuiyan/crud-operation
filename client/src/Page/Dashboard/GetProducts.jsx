@@ -103,7 +103,7 @@ const GetProducts = () => {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('https://crud-operation-server-pied.vercel.app/select-product/delete', {
+                fetch('http://localhost:5000/select-product/delete', {
                     method: 'DELETE',
                     headers: {
                         'content-type': 'application/json'

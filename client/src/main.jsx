@@ -57,7 +57,7 @@ const router = createBrowserRouter([
       },{
         path: 'update-product/:id',
         element: <UpdateProduct></UpdateProduct>,
-        loader : ({params})=> fetch(`https://crud-operation-server-pied.vercel.app/product/${params.id}`)
+        loader : ({params})=> fetch(`http://localhost:5000/product/${params.id}`)
 
       }
     ]

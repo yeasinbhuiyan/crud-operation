@@ -82,8 +82,24 @@ const Login = () => {
         google(googelProvider)
             .then(result => {
                 const logged = result.user
-                console.log(logged)
-                navigate(from)
+
+
+                const userInfo = { name: logged.displayName, email: logged.email, image: logged.photoURL }
+                fetch('http://localhost:5000/users', {
+                    method: 'PUT',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(userInfo)
+
+                })
+                .then(res => res.json())
+                .then(() => {
+                        navigate(from)
+                    }
+
+
+                    )
 
             })
             .catch((error) => {

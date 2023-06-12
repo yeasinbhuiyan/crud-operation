@@ -37,7 +37,7 @@ const Register = () => {
 
         event.preventDefault()
         const eventTarget = event.target
-       
+
 
         console.log(location)
 
@@ -48,14 +48,39 @@ const Register = () => {
         }
 
 
-
+        // https://crud-operation-server-pied.vercel.app
         createAccount(email, password)
             .then(result => {
                 const newAccount = result.user
                 userName(name, img)
-                eventTarget.reset()
-                navigate(from)
-                console.log(newAccount)
+
+                const userInfo = { name: name, email: email, image: img }
+
+                fetch('http://localhost:5000/users', {
+                    method: 'PUT',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(userInfo)
+
+                })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.modifiedCount || data.upsertedCount) {
+                            eventTarget.reset()
+                            navigate(from)
+                            console.log(newAccount)
+
+
+                        }
+
+
+                    })
+
+
+
+
             })
             .catch((error) => {
                 console.log(error.message)
@@ -110,7 +135,7 @@ const Register = () => {
 
         }
 
-    
+
         else {
             setPasswordError('')
 
@@ -174,7 +199,7 @@ const Register = () => {
                         }
 
 
-                    
+
 
 
 
